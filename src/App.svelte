@@ -1,4 +1,6 @@
 <script>
+  import { scale } from "svelte/transition";
+
   // @ts-ignore
   import csv from "./assets/monthly_emotions.csv";
 
@@ -67,21 +69,56 @@
     </div>
   </div>
   <div class="month">
+    <!-- Next step:
+     - add mouse scrollable
+     - rearrange order as in design
+     - scale by data
+     -->
     {#each months as month}
       <div class="mood">
         {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
           {#if mood.emotion === "Happy"}
-            <img src="/sun.png" alt="" class="icon" />
+            <img
+              src="/sun.png"
+              style="transform: scale(calc({mood.value}/4));"
+              alt=""
+              class="emoji"
+            />
           {:else if mood.emotion === "Sad"}
-            <img src="/rain.png" alt="" class="icon" />
+            <img
+              src="/rain.png"
+              style="transform: scale(calc({mood.value}/4));"
+              alt=""
+              class="emoji"
+            />
           {:else if mood.emotion === "Anxiety"}
-            <img src="/cloud.png" alt="" class="icon" />
+            <img
+              src="/cloud.png"
+              style="transform: scale(calc({mood.value}/4));"
+              alt=""
+              class="emoji"
+            />
           {:else if mood.emotion === "Tired"}
-            <img src="/fog.png" alt="" class="icon" />
+            <img
+              src="/fog.png"
+              style="transform: scale(calc({mood.value}/4));"
+              alt=""
+              class="emoji"
+            />
           {:else if mood.emotion === "Excited"}
-            <img src="/snow.png" alt="" class="icon" />
+            <img
+              src="/snow.png"
+              style="transform: scale(calc({mood.value}/4));"
+              alt=""
+              class="emoji"
+            />
           {:else if mood.emotion === "Angry"}
-            <img src="/light.png" alt="" class="icon" />
+            <img
+              src="/light.png"
+              style="transform: scale(calc({mood.value}/4));"
+              alt=""
+              class="emoji"
+            />
           {/if}
         {/each}
       </div>
@@ -173,8 +210,9 @@
     width: 40px;
     height: 40px;
   }
-::-webkit-scrollbar {
-  width: 0px;}
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
 
   .month {
     display: flex;
@@ -182,14 +220,17 @@
     position: relative;
     overflow-x: scroll;
     overflow-y: hidden;
-    padding: 40px;
-    gap: 0.5rem;
+    padding-left: 40px;
   }
 
   .mood {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+  }
+
+  .emoji {
+    width: 64px;
+    height: 64px;
   }
 
   @media (max-width: 744px) {
