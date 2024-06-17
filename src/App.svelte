@@ -1,18 +1,26 @@
 <script>
-  import { scale } from "svelte/transition";
-
   // @ts-ignore
   import csv from "./assets/monthly_emotions.csv";
 
+  //what it should be, but "month" | console.log(csv.map(item => item.day));
   //spread operator ...
-  console.log([...new Set(csv.map((item) => Object.values(item)[0]))]);
-
-  //what it should be, but "Day"
-  //console.log(csv.map(item => item.day));
-
-  console.log();
-
   let months = [...new Set(csv.map((item) => Object.values(item)[0]))];
+
+  function weather(emotion) {
+    if (emotion === "Happy") {
+      return "/sun.png";
+    } else if (emotion === "Sad") {
+      return "/rain.png";
+    } else if (emotion === "Anxiety") {
+      return "/cloud.png";
+    } else if (emotion === "Angry") {
+      return "/light.png";
+    } else if (emotion === "Tired") {
+      return "/fog.png";
+    } else if (emotion === "Excited") {
+      return "/snow.png";
+    }
+  }
 </script>
 
 <main>
@@ -28,8 +36,7 @@
         whatever weather comes my way. After 40 months of tracking this data, I
         think I'm getting better at dealing with the gloomy sky in my head. As
         you can see in the data, I could be happy with anxiety someday and mixed
-        emotions. (I'm not tracking just good or bad days because I believe it's
-        more complicated than that.)
+        emotions.
       </p>
     </div>
     <div class="howto">
@@ -37,7 +44,7 @@
         <h2 class="syne-head">How to read</h2>
         <p class="syne-text">
           Each emoji on the chart shows the average emotional score for the
-          month, with bigger sizes meaning things got intense
+          month, with bigger sizes meaning things got intense from scale 1 to 10
         </p>
       </div>
       <div class="item">
@@ -72,55 +79,21 @@
     <!-- Next step:
      - add mouse scrollable
      - rearrange order as in design
-     - scale by data
+     - tooltip
+     - mark event
      -->
     {#each months as month}
       <div class="mood">
         {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
-          {#if mood.emotion === "Happy"}
-            <img
-              src="/sun.png"
-              style="transform: scale(calc({mood.value}/4));"
-              alt=""
-              class="emoji"
-            />
-          {:else if mood.emotion === "Sad"}
-            <img
-              src="/rain.png"
-              style="transform: scale(calc({mood.value}/4));"
-              alt=""
-              class="emoji"
-            />
-          {:else if mood.emotion === "Anxiety"}
-            <img
-              src="/cloud.png"
-              style="transform: scale(calc({mood.value}/4));"
-              alt=""
-              class="emoji"
-            />
-          {:else if mood.emotion === "Tired"}
-            <img
-              src="/fog.png"
-              style="transform: scale(calc({mood.value}/4));"
-              alt=""
-              class="emoji"
-            />
-          {:else if mood.emotion === "Excited"}
-            <img
-              src="/snow.png"
-              style="transform: scale(calc({mood.value}/4));"
-              alt=""
-              class="emoji"
-            />
-          {:else if mood.emotion === "Angry"}
-            <img
-              src="/light.png"
-              style="transform: scale(calc({mood.value}/4));"
-              alt=""
-              class="emoji"
-            />
-          {/if}
+        <!-- <div class="tooltip">{mood.emotion}:{mood.value}</div> -->
+          <img
+            style="transform: scale(calc({mood.value}/5))"
+            alt=""
+            class="emoji"
+            src={weather(mood.emotion)}
+          />
         {/each}
+        <span class="label">{month}</span>
       </div>
     {/each}
   </div>
@@ -226,11 +199,29 @@
   .mood {
     display: flex;
     flex-direction: column;
+
+  }
+  .mood:hover {
+    background-color: #ffffff;
+    border-radius: 8px;
   }
 
   .emoji {
-    width: 64px;
-    height: 64px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .label {
+    font-size: 12;
+    text-align: center;
+  }
+
+  .tooltip{
+    visibility: hidden;
+  }
+
+  .tooltip:hover{
+    visibility: visible;
   }
 
   @media (max-width: 744px) {
