@@ -6,7 +6,7 @@
   //spread operator ...
   let months = [...new Set(csv.map((item) => Object.values(item)[0]))];
 
-  function weather(emotion) {
+  function getEmoji(emotion) {
     if (emotion === "Happy") {
       return "/sun.png";
     } else if (emotion === "Sad") {
@@ -20,6 +20,10 @@
     } else if (emotion === "Excited") {
       return "/snow.png";
     }
+  }
+
+  function getScale(value) {
+    return 0.5 * Math.sqrt(value);
   }
 </script>
 
@@ -77,23 +81,30 @@
   </div>
   <div class="month">
     <!-- Next step:
-     - add mouse scrollable
-     - rearrange order as in design
+     - add mouse scrollable (NTH)
+     - rearrange order as in design (NTH)
      - tooltip
      - mark event
      -->
     {#each months as month}
       <div class="mood">
+        <div class="tooltip syne-text">
+          {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
+            <div>
+              {mood.emotion}:
+              {parseFloat(mood.value).toFixed(2)}
+            </div>
+          {/each}
+        </div>
         {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
-        <!-- <div class="tooltip">{mood.emotion}:{mood.value}</div> -->
           <img
-            style="transform: scale(calc({mood.value}/5))"
+            style="transform: scale({getScale(mood.value)})"
             alt=""
             class="emoji"
-            src={weather(mood.emotion)}
+            src={getEmoji(mood.emotion)}
           />
         {/each}
-        <span class="label">{month}</span>
+        <span class="label syne-text">{month}</span>
       </div>
     {/each}
   </div>
@@ -141,7 +152,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 40px;
+    padding: 24px;
     gap: 40px;
   }
 
@@ -199,7 +210,7 @@
   .mood {
     display: flex;
     flex-direction: column;
-
+    z-index: 1;
   }
   .mood:hover {
     background-color: #ffffff;
@@ -214,14 +225,21 @@
   .label {
     font-size: 12;
     text-align: center;
+    padding: 8px;
   }
 
-  .tooltip{
-    visibility: hidden;
-  }
-
-  .tooltip:hover{
-    visibility: visible;
+  .tooltip {
+    position: absolute;
+    background-color: rgba(40, 40, 40, 0.8);
+    color: #ffffff;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    /* top: -120px; */
   }
 
   @media (max-width: 744px) {
