@@ -23,7 +23,16 @@
   }
 
   function getScale(value) {
-    return 0.5 * Math.sqrt(value);
+    return 0.4 * Math.sqrt(value);
+  }
+
+  let visible = false;
+
+  function showTooltip() {
+    visible = true;
+  }
+  function hideTooltip() {
+    visible = false;
   }
 </script>
 
@@ -79,23 +88,26 @@
       </div>
     </div>
   </div>
-  <div class="month">
-    <!-- Next step:
-     - add mouse scrollable (NTH)
-     - rearrange order as in design (NTH)
-     - tooltip
-     - mark event
-     -->
+  <div class="viz">
     {#each months as month}
       <div class="mood">
-        <div class="tooltip syne-text">
-          {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
-            <div>
-              {mood.emotion}:
-              {parseFloat(mood.value).toFixed(2)}
-            </div>
-          {/each}
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div
+          class="tooltip syne-text"
+          on:mouseenter={showTooltip}
+          on:mouseleave={hideTooltip}
+        >
+          {#if visible}
+            {month}
+            {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
+              <div>
+                {mood.emotion}:
+                {parseFloat(mood.value).toFixed(2)}
+              </div>
+            {/each}
+          {/if}
         </div>
+
         {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
           <img
             style="transform: scale({getScale(mood.value)})"
@@ -104,7 +116,23 @@
             src={getEmoji(mood.emotion)}
           />
         {/each}
-        <span class="label syne-text">{month}</span>
+
+        <div class="label syne-text">
+          <!-- {#if month === "2021-1" || "2022-1" || "2023-1" || "2024-1"}
+            <span>{month.slice(0, 4)}</span>
+          {/if} -->
+          {#if month === "2021-1"}
+            <span>{month.slice(0, 4)}</span>
+          {:else if month === "2022-1"}
+            <span>{month.slice(0, 4)}</span>
+          {:else if month === "2023-1"}
+            <span>{month.slice(0, 4)}</span>
+          {:else if month === "2024-1"}
+            <span>{month.slice(0, 4)}</span>
+          <!-- {:else if month === "2021-4"}
+            <span>Lock down</span> -->
+          {/if}
+        </div>
       </div>
     {/each}
   </div>
@@ -132,7 +160,7 @@
     top: 0;
     left: 0;
     position: fixed;
-    background: linear-gradient(0deg, #dbffce 0%, #ffffff 10%, #d7f8ff 100%);
+    background: linear-gradient(0deg, #dbffce 0%, #f8f8f8 10%, #d7f8ff 100%);
   }
 
   h1 {
@@ -146,6 +174,10 @@
 
   p {
     font-size: 16px;
+  }
+
+  .bold {
+    font-style: bold;
   }
 
   .header {
@@ -198,19 +230,18 @@
     width: 0px;
   }
 
-  .month {
+  .viz {
     display: flex;
-    flex-direction: row;
     position: relative;
-    overflow-x: scroll;
-    overflow-y: hidden;
+    flex-direction: row;
+    overflow: scroll;
     padding-left: 40px;
   }
 
   .mood {
     display: flex;
     flex-direction: column;
-    z-index: 1;
+    align-items: center;
   }
   .mood:hover {
     background-color: #ffffff;
@@ -230,16 +261,20 @@
 
   .tooltip {
     position: absolute;
-    background-color: rgba(40, 40, 40, 0.8);
-    color: #ffffff;
+    color: transparent;
+    width: 80px;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .tooltip:hover {
+    background-color: white;
+    color: gray;
     padding: 8px;
     border-radius: 4px;
     font-size: 12px;
-    width: 80px;
-    display: flex;
-    flex-direction: column;
-    z-index: 1;
-    /* top: -120px; */
+    height: fit-content;
+    margin-right: 160px;
   }
 
   @media (max-width: 744px) {
