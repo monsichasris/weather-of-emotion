@@ -1,7 +1,7 @@
 <script>
     // @ts-ignore
     import csv from "./assets/monthly_emotions.csv";
-    
+
     //what it should be, but "month" | console.log(csv.map(item => item.day));
     //spread operator ...
     let months = [...new Set(csv.map((item) => Object.values(item)[0]))];
@@ -36,7 +36,7 @@
     }
 </script>
 
-<div class="viz">
+<div class="timeline">
     {#each months as month}
         <div class="mood">
             <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -46,11 +46,11 @@
                 on:mouseleave={hideTooltip}
             >
                 {#if visible}
-                    {month}
+                    <span class="bold">{month}</span>
                     {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
-                        <div>
-                            {mood.emotion}:
-                            {parseFloat(mood.value).toFixed(2)}
+                        <div class="tooltiptext">
+                            <div>{mood.emotion}:</div>
+                            <div>{parseFloat(mood.value).toFixed(2)}</div>
                         </div>
                     {/each}
                 {/if}
@@ -59,7 +59,7 @@
             {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
                 <img
                     style="transform: scale({getScale(mood.value)})"
-                    alt=""
+                    alt={mood.emotion}
                     class="emoji"
                     src={getEmoji(mood.emotion)}
                 />
@@ -77,8 +77,24 @@
                     <span>{month.slice(0, 4)}</span>
                 {:else if month === "2024-1"}
                     <span>{month.slice(0, 4)}</span>
-                    <!-- {:else if month === "2021-4"}
-            <span>Lock down</span> -->
+                {:else if month === "2021-4"}
+                    <span class="annotation">Lock-down started 🔒</span>
+                {:else if month === "2021-12"}
+                    <span class="annotation">Lock-down ended 🔓</span>
+                {:else if month === "2022-3"}
+                    <span class="annotation">Instructor 1st time</span>
+                {:else if month === "2022-8"}
+                    <span class="annotation">Broke up 💔</span>
+                {:else if month === "2022-10"}
+                    <span class="annotation">Take hormones</span>
+                {:else if month === "2022-12"}
+                    <span class="annotation">Travel aboard</span>
+                {:else if month === "2023-2"}
+                    <span class="annotation">Start LDR 💘</span>
+                {:else if month === "2023-8"}
+                    <span class="annotation">Start Dancing</span>
+                {:else if month === "2024-3"}
+                    <span class="annotation">Got an offer from school</span>
                 {/if}
             </div>
         </div>
@@ -86,13 +102,13 @@
 </div>
 
 <style>
-    .viz {
+    .timeline {
         display: flex;
         position: relative;
         flex-direction: row;
         overflow: scroll;
         padding-left: 40px;
-        padding-right: 112px;
+        padding-right: 128px;
     }
 
     .mood {
@@ -116,10 +132,14 @@
         padding: 8px;
     }
 
+    .bold {
+        font-weight: 600;
+    }
+
     .tooltip {
         position: absolute;
         color: transparent;
-        width: 80px;
+        width: 88px;
         height: 100%;
         z-index: 1;
     }
@@ -131,7 +151,20 @@
         border-radius: 4px;
         font-size: 12px;
         height: fit-content;
-        margin-left: 160px;
+        margin-left: 172px;
+    }
+
+    .tooltiptext {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .annotation {
+        display: flex;
+        width: 100%;
+        align-items: left;
+        font-size: 12px;
+        opacity: 75%;
     }
 
     ::-webkit-scrollbar {

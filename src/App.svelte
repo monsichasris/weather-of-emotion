@@ -60,7 +60,7 @@
 </main>
 
 <style>
-  @import url("https://fonts.googleapis.com/css2?family=Syne&family=Syne+Tactile&display=swap");
+  @import url('https://fonts.googleapis.com/css2?family=Syne+Tactile&family=Syne:wght@400..800&display=swap');
 
   .syne-head {
     font-family: "Syne Tactile", system-ui;
@@ -71,7 +71,6 @@
   :global(.syne-text) {
     font-family: "Syne", sans-serif;
     font-optical-sizing: auto;
-    font-style: normal;
     line-height: 1.5;
   }
 
@@ -95,6 +94,7 @@
 
   p {
     font-size: 16px;
+    font-style: normal;
   }
 
   .header {
