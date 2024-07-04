@@ -1,7 +1,6 @@
 <script>
   // @ts-ignore
   import Viz from "./Viz.svelte";
-
 </script>
 
 <main>
@@ -60,7 +59,7 @@
 </main>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne+Tactile&family=Syne:wght@400..800&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Syne+Tactile&family=Syne:wght@400..800&display=swap");
 
   .syne-head {
     font-family: "Syne Tactile", system-ui;
@@ -75,12 +74,14 @@
   }
 
   main {
-    height: 100vh;
+    min-height: 100vh;
     width: 100vw;
-    top: 0;
-    left: 0;
-    position: fixed;
-    background: linear-gradient(0deg, #dbffce 0%, #f8f8f8 10%, #d7f8ff 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-image: linear-gradient(0deg, #dbffce 0%, #f8f8f8 10%, #d7f8ff 100%);
+    background-attachment: fixed;
+    
   }
 
   h1 {
@@ -88,7 +89,8 @@
   }
 
   h1,
-  h2 {
+  h2 ,
+  :global(body) {
     margin: 0;
   }
 
@@ -101,7 +103,9 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 24px;
+    padding: 40px;
+    padding-top: 24px;
+    padding-bottom: 24px;
     gap: 40px;
   }
 

@@ -26,37 +26,37 @@
         return 0.4 * Math.sqrt(value);
     }
 
-    let visible = false;
+    let visible = "";
 
-    function showTooltip() {
-        visible = true;
+    function showTooltip(month) {
+        visible = month;
     }
     function hideTooltip() {
-        visible = false;
+        visible = "";
     }
 </script>
 
 <div class="timeline">
     {#each months as month}
-        <div class="mood">
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div
-                class="tooltip syne-text"
-                on:mouseenter={showTooltip}
-                on:mouseleave={hideTooltip}
-            >
-                {#if visible}
-                    <span class="bold">{month}</span>
-                    {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
-                        <div class="tooltiptext">
-                            <div>{mood.emotion}:</div>
-                            <div>{parseFloat(mood.value).toFixed(2)}</div>
-                        </div>
-                    {/each}
-                {/if}
+        {@const moods = csv.filter((item) => Object.values(item)[0] === month)}
+        <div
+            class="mood"
+            role="tooltip"
+            on:mouseenter={() => showTooltip(month)}
+            on:mouseleave={hideTooltip}
+        >
+        {#if visible === month}
+            <div class="tooltip syne-text">
+                <span class="bold">{month}</span>
+                {#each moods as mood}
+                    <div class="tooltiptext">
+                        <div>{mood.emotion}:</div>
+                        <div>{parseFloat(mood.value).toFixed(2)}</div>
+                    </div>
+                {/each}
             </div>
-
-            {#each csv.filter((item) => Object.values(item)[0] === month) as mood}
+        {/if}
+            {#each moods as mood}
                 <img
                     style="transform: scale({getScale(mood.value)})"
                     alt={mood.emotion}
@@ -66,16 +66,7 @@
             {/each}
 
             <div class="label syne-text">
-                <!-- {#if month === "2021-1" || "2022-1" || "2023-1" || "2024-1"}
-            <span>{month.slice(0, 4)}</span>
-          {/if} -->
-                {#if month === "2021-1"}
-                    <span>{month.slice(0, 4)}</span>
-                {:else if month === "2022-1"}
-                    <span>{month.slice(0, 4)}</span>
-                {:else if month === "2023-1"}
-                    <span>{month.slice(0, 4)}</span>
-                {:else if month === "2024-1"}
+                {#if month.endsWith("-1")}
                     <span>{month.slice(0, 4)}</span>
                 {:else if month === "2021-4"}
                     <span class="annotation">Lock-down started 🔒</span>
@@ -117,7 +108,7 @@
         align-items: center;
     }
     .mood:hover {
-        background-color: #ffffff;
+        background-color: white;
         border-radius: 8px;
     }
 
@@ -138,20 +129,14 @@
 
     .tooltip {
         position: absolute;
-        color: transparent;
-        width: 88px;
-        height: 100%;
-        z-index: 1;
-    }
-
-    .tooltip:hover {
         background-color: white;
-        color: gray;
         padding: 8px;
         border-radius: 4px;
         font-size: 12px;
         height: fit-content;
-        margin-left: 172px;
+        width: 80px;
+        margin-left: 160px;
+        z-index: 1;
     }
 
     .tooltiptext {
