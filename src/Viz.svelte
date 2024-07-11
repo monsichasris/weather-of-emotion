@@ -45,17 +45,17 @@
             on:mouseenter={() => showTooltip(month)}
             on:mouseleave={hideTooltip}
         >
-        {#if visible === month}
-            <div class="tooltip syne-text">
-                <span class="bold">{month}</span>
-                {#each moods as mood}
-                    <div class="tooltiptext">
-                        <div>{mood.emotion}:</div>
-                        <div>{parseFloat(mood.value).toFixed(2)}</div>
-                    </div>
-                {/each}
-            </div>
-        {/if}
+            {#if visible === month}
+                <div class="tooltip syne-text">
+                    <span class="bold">{month}</span>
+                    {#each moods as mood}
+                        <div class="tooltiptext">
+                            <div>{mood.emotion}:</div>
+                            <div>{parseFloat(mood.value).toFixed(2)}</div>
+                        </div>
+                    {/each}
+                </div>
+            {/if}
             {#each moods as mood}
                 <img
                     style="transform: scale({getScale(mood.value)})"
